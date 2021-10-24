@@ -30,13 +30,13 @@ jobs:
 
     - name: Make list
       run: |
-        go install golang.org/dl/go1.${{ matrix.gover }}@latest
-        go1.${{ matrix.gover }} tool dist list > go-tool-dist-list.1.${{ matrix.gover }}.txt
+        go install golang.org/dl/go${{ matrix.gover }}@latest
+        go1.${{ matrix.gover }} tool dist list > go-tool-dist-list.${{ matrix.gover }}.txt
       
     - uses: actions/upload-artifact@v2
       with:
-        name: "go-tool-dist-list.1.${{ matrix.gover }}.txt"
-        path: "go-tool-dist-list.1.${{ matrix.gover }}.txt"
+        name: "go-tool-dist-list.${{ matrix.gover }}.txt"
+        path: "go-tool-dist-list.${{ matrix.gover }}.txt"
     
   export:
     runs-on: ubuntu-latest
