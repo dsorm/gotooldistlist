@@ -26,18 +26,19 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: ${{ matrix.node }}
+        go-version: ${{ matrix.gover }}
 
     - name: Make list
-      run: go tool dist list >> go-tool-dist-list.${{ matrix.node }}.txt
+      run: go tool dist list >> go-tool-dist-list.${{ matrix.gover }}.txt
       
     - uses: actions/upload-artifact@v2
       with:
-        name: go-tool-dist-list.${{ matrix.node }}.txt
-        path: go-tool-dist-list.${{ matrix.node }}.txt
+        name: "go-tool-dist-list.${{ matrix.gover }}.txt"
+        path: "go-tool-dist-list.${{ matrix.gover }}.txt"
     
   export:
     runs-on: ubuntu-latest
+    needs: build
     steps:
     - name: Init
       run: mkdir release
