@@ -23,19 +23,34 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Prepare Release Variables
-      id: vars
-      uses: tendermint/starport/actions/release/vars@develop
-    - name: Init
-      run: mkdir release
-
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
         go-version: ${{ matrix.node }}
 
     - name: Make list
-      run: go tool dist list >> release/go-tool-dist-list.{{ matrix.node }}.txt
+      run: go tool dist list >> go-tool-dist-list.${{ matrix.node }}.txt
+      
+    - uses: actions/upload-artifact@v2
+      with:
+        name: go-tool-dist-list.${{ matrix.node }}.txt
+        path: go-tool-dist-list.${{ matrix.node }}.txt
+    
+  export:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Init
+      run: mkdir release
+      
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v2.0.10
+      with:
+      # Destination path
+          path: "release/"
+    
+    - name: Prepare Release Variables
+      id: vars
+      uses: tendermint/starport/actions/release/vars@develop
       
     - name: Delete the "latest" Release
       uses: dev-drprasad/delete-tag-and-release@v0.2.0
@@ -43,7 +58,7 @@ jobs:
       with:
           tag_name: ${{ steps.vars.outputs.tag_name }}
           delete_release: true
-      env:
+
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Publish the Release
